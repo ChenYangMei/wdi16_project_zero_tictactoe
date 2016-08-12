@@ -42,9 +42,9 @@ header h1{
 }
 
 main{
-  width: 40%;
+  width: 42%;
   display: block;
-  margin: 2em 20%;
+  margin: 2em 5% 2em 10%;
 }
 
 .squares {
@@ -56,11 +56,11 @@ main{
 }
 
 aside {
-  width: 30%;
+  width: 32%;
   height: 600px;
   position: absolute;
   top: 12%;
-  right: 10%;
+  right: 15%;
 }
 
 .players{
@@ -69,7 +69,7 @@ aside {
   text-align: center;
   color: gainsboro;
   font-size: 2em;
-  padding: .5em;
+  padding: 1em;
   line-height: 2;
 }
 .buttons{
@@ -104,19 +104,21 @@ aside {
   display: inline-block;
 }
 
-.AI img{
-  width: 100px;
+#oracle{
+  width: 70px;
   border-radius: 20%;
-  display: block;
 }
 
-.AI {
+.AI{
   width: 10%;
-  height: 300px;
   position: absolute;
-  top: 45%;
-  left: 7%;
+  top: 40%;
+  right: 5%;
+  text-align: center;
   color: ghostwhite;
-  font-size: 1.5em;
+  height: 300px;
+}
 
+.recordsAI{
+  padding: 1em;
 }

@@ -6,7 +6,7 @@ $squares.css({
     $(this).fadeOut(300);
     $(this).fadeIn(300);
 });
-$(".imagesOne, .imagesTwo, .buttons").mouseover(function() {
+$(".imagesOne, .imagesTwo, .buttons, #oracle").mouseover(function() {
     $(this).fadeOut(300);
     $(this).fadeIn(300);
     $(this).css("corsor", "pointer"); //not working
@@ -14,7 +14,7 @@ $(".imagesOne, .imagesTwo, .buttons").mouseover(function() {
 
 //Background Music + Toggle button "This logic is awesome!!!!!"
 var audio = new Audio("audio/clubbedToDeath.mp3");
-audio.play();
+// audio.play();
 var audioPlaying = true;
 var $musicButton = $(".musicButton");
 var toggleButton = function() {
@@ -52,6 +52,8 @@ var selectRole = function() {
         });
     };
     var SelectEventTwo = function() {
+        OracleWin();
+        ClickEvent();
         $(this).css({
             "border": "5px solid green",
             "width": "20%"
@@ -66,7 +68,12 @@ var selectRole = function() {
             }
         });
         $squares.on("click", ClickEvent);
-        $(".AI img").fadeTo(500, 0.3);
+
+        if (OracleOn === false) {
+            $(".recordsAI").fadeTo(500, 0.3);
+            $oracle.fadeTo(500, 0.3);
+        }
+
     };
     $(".imagesOne").one("click", SelectEventOne);
     $(".imagesTwo").one("click", SelectEventTwo);
@@ -79,12 +86,15 @@ selectRole();
 var count = 0;
 var countForTie = 0;
 var tieCount = 0;
+var OracleLive = [];
+
 var ClickEvent = function() {
     // console.log("this is " + $(this));
     // console.log("clicked");
     $(this).off("click");
     count++;
     countForTie++;
+
 
     if (count % 2 === 0) {
         $(this).css({
@@ -95,21 +105,44 @@ var ClickEvent = function() {
         $("#p2").css("color", "ghostwhite");
         TicTacToe.PlayerTwo.push($(this).html());
         console.log(TicTacToe.PlayerTwo);
-
     }
     if (count % 2 !== 0) {
-        $(this).css({
-            "background": 'url(' + clickedImageOne + ')',
-            "background-size": "cover"
-        });
-        $("#p2").css("color", "green");
-        $("#p1").css("color", "ghostwhite");
-        TicTacToe.PlayerOne.push($(this).html());
-        console.log(TicTacToe.PlayerOne);
-
+        if (OracleOn === false) {
+            $(this).css({
+                "background": 'url(' + clickedImageOne + ')',
+                "background-size": "cover"
+            });
+            $("#p2").css("color", "green");
+            $("#p1").css("color", "ghostwhite");
+            TicTacToe.PlayerOne.push($(this).html());
+            console.log(TicTacToe.PlayerOne);
+        }
     }
+    // if(OracleOn === true) {
+    //
+    //     $(this).css({
+    //         "background": 'url(' + clickedImageTwo + ')',
+    //         "background-size": "cover"
+    //     });
+    //     TicTacToe.PlayerTwo.push($(this).html());
+    //     console.log(TicTacToe.PlayerTwo);
+    //
+    //         for (var i = 0; i < TicTacToe.PlayerTwo.length; i++) {
+    //             var Index = TicTacToe.All.indexOf(TicTacToe.PlayerTwo[i]);
+    //             OracleLive = TicTacToe.All.splice(Index, 1);
+    //             TicTacToe.Oracle.push([Math.floor(Math.random()*OracleLive.length)]);
+    //         }
+    //
+    //         OracleInput();
+    //         // for (var j = 0; j < TicTacToe.Oracle.length; j++) {
+    //         //     $("#" + TicTacToe.Oracle[j]).css({
+    //         //         "background": 'url(images/oracle.jpg)',
+    //         //         "background-size": "cover"
+    //         //     });
+    //         // }
+    //     }
     TicTacToe.WinTicTacToe();
-
+    OracleWin();
 };
 
 
@@ -117,10 +150,13 @@ var ClickEvent = function() {
 // Win TicTacToe
 var CountWinOne = 0;
 var CountWinTwo = 0;
+var CountWinOracle = 0;
 var TicTacToe = {
 
     PlayerOne: [],
     PlayerTwo: [],
+    Oracle: [],
+    All:['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'],
 
     // Sorting out Input:
     Input: function() {
@@ -143,16 +179,21 @@ var TicTacToe = {
         var WinOptions = this.WinOptions;
         var PlayerOne = this.PlayerOne;
         var PlayerTwo = this.PlayerTwo;
+        var Oracle = this.Oracle;
 
         var $ScoresOne = $("#scoresOne span");
         var $ScoresTwo = $("#scoresTwo span");
-
+        var $ScoresOracle = $("scoresAI");
 
         var CheckOne = function(element) {
             return PlayerOne.includes(element);
         };
         var CheckTwo = function(element) {
             return PlayerTwo.includes(element);
+        };
+
+        var CheckOracle = function(element) {
+            return Oracle.includes(element);
         };
 
         for (var key in WinOptions) {
@@ -192,6 +233,15 @@ var TicTacToe = {
                         "border": "8px groove #00cd00"
                     });
                     gameOver = true;
+                    //Oracle: check win
+                }else if (EachWinOptions.every(CheckOracle)) {
+                    CountWinOracle++;
+                    countForTie = 0;
+                    $ScoresOracle.html('' + CountWinOracle + '');
+                    $newRound.css({
+                        "border": "8px groove #00cd00"
+                    });
+                    gameOver = true;
                 }
             }
         }
@@ -200,7 +250,7 @@ var TicTacToe = {
             swal("It's a tie!");
             countForTie = 0;
             tieCount++;
-            $("#tieOne span, #tieTwo span").html('' + tieCount + '');
+            $("#tieOne span, #tieTwo span #tieAI span").html('' + tieCount + '');
             gameOver = true;
             $newRound.css({
                 "border": "8px groove #00cd00"
@@ -335,13 +385,48 @@ Test();
 
 
 //AI
-var $oracle = $(".AI img");
+var $oracle = $("#oracle");
+var center = ['E'];
+var edge = ['B', 'F', 'H', 'D'];
+var corner = ['A', 'C', 'I', 'G'];
+var OracleOn = false;
 
 var Oracle = function(){
-
-    $("#playerTwo").css("visibility", "hidden");
-
-
+    OracleOn = true;
+    $oracle.css("border", "5px green solid");
+    $("#playerOne").css("visibility", "hidden");
+    $("#p2").html("You");
 };
 
 $oracle.on("click", Oracle);
+
+var OracleInput = function(){
+    for (var i = 0; i < TicTacToe.Oracle.length; i++) {
+        $("#" + TicTacToe.Oracle[i]).css({
+            "background": 'url(images/oracle.jpg)',
+            "background-size": "cover"
+        });
+    }
+};
+
+var OracleWin = function(){
+    // count = 1;
+
+    // TicTacToe.Oracle = ['E'];
+
+    // if (edge.includes(TicTacToe.PlayerTwo[0])) {
+    //     if (['B', 'F'].includes(TicTacToe.PlayerTwo[0])) {
+    //         TicTacToe.Oracle = ['E', 'G'];
+    //         OracleInput();
+    //         if (true) {
+    //
+    //         }
+    //     }
+    //     if (['D', 'H'].includes(TicTacToe.PlayerTwo[0])) {
+    //         TicTacToe.Oracle = ['E', 'C'];
+    //         OracleInput();
+    //     }
+    // }
+
+    TicTacToe.WinTicTacToe();
+};
