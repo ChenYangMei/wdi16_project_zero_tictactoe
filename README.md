@@ -38,6 +38,10 @@ After two weeks' study of JavaScript, jQuery, HTML & CSS, this is a fun project 
 - jQuery
 - SweetAlert (a jQuery plugin I used for tie alerts)
 
+## Bugs
+
+- if AI is selected and then the player presses the new round button before playing the first round, the AI will make the initial move and the second move simultaneously only after the player selects a tile. 
+
 ## Acknowledgements
 
 - https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/every
